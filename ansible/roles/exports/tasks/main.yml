@@ -1,0 +1,12 @@
+---
+
+- name: Template a file to /etc/exports
+  become: yes
+  template:
+    src: exports.j2
+    dest: /etc/exports
+    mode: '0777'  
+
+- name: Reread /etc/exports
+  become: yes
+  shell: "exportfs -r && exportfs -s"

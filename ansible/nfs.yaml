@@ -1,0 +1,58 @@
+---
+
+- name: Configurar servidor NFS
+  hosts: nfs
+  tasks:
+    - name: Gather facts
+      setup:
+      delegate_to: "{{ item }}"
+      delegate_facts: true
+      loop: "{{ groups['all'] }}"                        
+      register: gather
+
+    - name: Create directory
+      become: yes
+      file:
+        path: /srv/nfs
+        state: directory
+
+    - name: check if /srv/nfs exists into fstab
+      lineinfile:
+        state: absent
+        path: /etc/fstab
+        regexp: "/srv/nfs"
+      check_mode: true
+      register: check
+
+    - name: add folder to fstab
+      become: yes
+      shell: echo "/dev/sda1        /srv/nfs                xfs     defaults        0 0" >> /etc/fstab
+      when: check.found == 0
+      
+    - import_role:
+        name: dnf
+      vars:
+        packages:
+          - nfs-utils
+          - net-tools
+
+    - name: "enabled and start nfs-server"
+      become: yes
+      systemd:
+        name: nfs-server
+        state: started
+        enabled: yes
+
+    - import_role:
+        name: exports
+      vars:
+        nfs_path: "/srv/nfs"
+
+
+    - import_role:
+        name: firewall_services
+      vars:
+        services:
+          - nfs
+          - rpc-bind
+          - mountd

@@ -1,0 +1,3 @@
+{% for host in groups['all'] %}
+{{ nfs_path }} {{ hostvars[host].ansible_host }}(rw,sync)
+{% endfor %} 

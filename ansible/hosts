@@ -1,0 +1,16 @@
+master.local ansible_host=192.168.100.103
+worker.local ansible_host=192.168.100.104
+nfs.local ansible_host=192.168.100.105
+
+[all:vars]
+ansible_python_interpreter=/usr/bin/python3
+ansible_user=ansible
+
+[master]
+master.local ansible_connection=local
+
+[worker]
+worker.local
+
+[nfs]
+nfs.local

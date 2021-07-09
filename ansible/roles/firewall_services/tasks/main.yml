@@ -1,0 +1,15 @@
+---
+
+- name: Add service to firewalld
+  become: yes
+  firewalld:
+    service: "{{ item }}"
+    permanent: yes
+    state: enabled
+  loop: "{{ services }}"
+
+- name: reload service firewalld
+  become: yes
+  systemd:
+    name: firewalld
+    state: reloaded

@@ -1,0 +1,37 @@
+---
+
+- name: Prerrequisites
+  hosts: all
+  tasks:
+    - name: "set timezone to Europe/Madrid"
+      become: yes
+      timezone:
+       name: Europe/Madrid
+
+    - import_role:
+        name: dnf
+      vars:
+        packages:
+          - chrony
+
+    - name: "enabled and start chronyd"
+      become: yes
+      systemd: 
+        name: chronyd
+        state: started
+        daemon_reload: yes
+        enabled: yes
+        
+    - name: "Enable ntp"
+      command: /usr/bin/timedatectl set-ntp true
+
+    - import_role: 
+        name: disable_selinux
+
+    - import_role:
+        name: dnf
+      vars:
+        packages:
+          - nfs-utils
+          - nfs4-acl-tools
+          - wget
