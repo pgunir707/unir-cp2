@@ -41,5 +41,16 @@
 
     - name: Instalacion plugin CNI de kubernetes y definicion de la red de los PODS
       shell: kubeadm init --pod-network-cidr 192.169.0.0/16
+			register: kubeadm_init
 
+		- name: Show output kubeadm
+			debug:
+				msg: "{{ kubeadm_init.output }}"
+
+		- import_role:
+				name: kubectl_users
+			vars:
+				users:
+					- { user: 'root', path: '/root'}
+					- { user: 'ansible', path: '/home/ansible'
 
