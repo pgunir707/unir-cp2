@@ -26,7 +26,7 @@
 
     - name: add folder to fstab
       become: yes
-      shell: echo "/dev/sda1        /srv/nfs                xfs     defaults        0 0" >> /etc/fstab
+      shell: echo "/shared        /srv/nfs                nfs     defaults        0 0" >> /etc/fstab
       when: check.found == 0
       
     - import_role:
@@ -56,3 +56,6 @@
           - nfs
           - rpc-bind
           - mountd
+
+    - import_role:
+        name: firewall_reload

@@ -7,9 +7,3 @@
     permanent: yes
     state: enabled
   loop: "{{ services }}"
-
-- name: reload service firewalld
-  become: yes
-  systemd:
-    name: firewalld
-    state: reloaded

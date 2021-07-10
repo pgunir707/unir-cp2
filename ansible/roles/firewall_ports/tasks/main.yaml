@@ -1,0 +1,9 @@
+---
+
+- name: Add port to firewalld
+  become: yes
+  firewalld:
+    port: "{{ item.port }}/{{ item.protocol }}"
+    permanent: yes
+    state: enabled
+  with_items: "{{ ports }}"

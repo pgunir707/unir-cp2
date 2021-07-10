@@ -1,0 +1,19 @@
+---
+
+- name: Add kubernetes repo
+  become: yes
+  copy:
+    src: kubernetes.repo
+    dest: /etc/yum.repos.d/kubernetes.repo
+ 
+- name: Install kubernetes packages
+  become: yes
+  yum:
+    name: [kubelet,kubeadm,kubectl]
+    disable_excludes: kubernetes
+
+- name: Enable kubelet service
+  become: yes
+  service:
+    name: kubelet
+    enabled: yes

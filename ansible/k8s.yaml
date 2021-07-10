@@ -1,0 +1,62 @@
+---
+
+- name: Install kubernetes
+  hosts: all
+  tasks:
+    - name: Activate transparent masquerading PODs
+      become: yes
+      modprobe:
+        name: br_netfilter
+        state: present
+
+    - name: Firewalld Add masquerade
+      become: yes
+      firewalld:
+        masquerade: "yes"
+        permanent: yes
+        state: enabled
+
+    - import_role:
+        name: firewall_reload
+        
+    - name: Comprobar que existe k8s.conf
+      stat:
+        path: /etc/sysctl.d/k8s.conf
+      register: k8s_status
+
+    - name: Crear k8s conf vacia si no existe
+      become: yes
+      file:
+        path: /etc/sysctl.d/k8s.conf
+        state: touch
+      when: not k8s_status.stat.exists
+
+    - name: Permitir que k8s maneje el trafico con el firewall
+      become: yes
+      lineinfile:
+        dest: /etc/sysctl.d/k8s.conf
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+      loop:
+        - { regexp: '^net.bridge.bridge-nf-call-ip6tables', line: 'net.bridge.bridge-nf-call-ip6tables=1'}
+        - { regexp: '^net.bridge.brige-nf-call-iptables', line: 'net.bridge.bridge-nf-call-iptables=1' }
+
+    - name: Lanzar sysctl system
+      become: yes
+      shell: sysctl --system
+
+    - name: Deshabilitar SWAP
+      become: yes
+      shell: swapoff -a
+
+    - name: Deshabilitar SWAP en fstab
+      become: yes
+      shell: sed -i '/swap/d' /etc/fstab
+      args:
+        warn: no
+
+    - import_role:
+        name: docker
+
+    - import_role:
+        name: kubernetes

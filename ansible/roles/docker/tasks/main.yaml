@@ -1,0 +1,32 @@
+---
+
+- name: Add docker repo
+  become: yes
+  get_url:
+    url: https://download.docker.com/linux/centos/docker-ce.repo
+    dest: /etc/yum.repos.d/docker-ce.repo
+    
+- name: Gather packages facts
+  package_facts:
+    manager: auto
+
+- name: Uninstall podman and buildah if are installed
+  become: yes
+  dnf:
+    name: [podman,buildah]
+    state: absent
+    autoremove: no
+  when: "'podman' in ansible_facts.packages and 'buildah' in ansible_facts.packages"
+
+- name: Install docker
+  become: yes
+  dnf:
+    name: docker-ce
+    state: present 
+  
+- name: Start docker service
+  service:
+    name: docker
+    state: started
+    enabled: yes
+  become: yes

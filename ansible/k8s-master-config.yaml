@@ -1,0 +1,45 @@
+---
+- name: Configurando el nodo master
+  hosts: master
+  tasks:
+    - import_role:
+        name: firewall_ports
+      vars:
+        ports:
+          - { port: 6443, protocol: "tcp" }
+          - { port: 2379-2380, protocol: "tcp" }
+          - { port: 10250-10252, protocol "tcp" }
+          - { port: 10255, protocol: "tcp" }
+
+    - name: Configuramos kubeadm
+      shell: kubeadm config images pull
+
+    - name: Permitir acceso desde los workers
+      become: yes
+      firewalld:
+        rich_rule: "rule family=ipv4 source address={{ hostvars[item].ansible_host}} accept"
+        permanent: yes
+        immediate: yes
+        state: enabled
+      loop: "{{ group['workers'] }}"
+     
+      
+    - import_role:
+        name: firewall_reload
+
+    - name : Permitir acceso de los contenedores a localhost
+      become: yes
+      firwalld:
+        rich_rule: "rule family=ipv4 source address={{ ansible_facts.docker0.ipv4.address }}/16 accept"
+        permanent: yes
+        immediate: yes
+        zone: public
+        state: enabled
+    
+    - import_role:
+        name: firewall_reload
+
+    - name: Instalacion plugin CNI de kubernetes y definicion de la red de los PODS
+      shell: kubeadm init --pod-network-cidr 192.169.0.0/16
+
+
