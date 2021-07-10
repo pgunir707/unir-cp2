@@ -1,0 +1,20 @@
+---
+
+- name: Install the Tigera Operator
+	shell: kubectl create -f https://docs.projectcalico.org/manifests/tigera-operator.yaml
+
+- name: Copy custom-resources.yaml
+  copy:
+  	src: custom-resources.yaml
+  	dest: /home/ansible
+  	owner: ansible
+  	group: ansible
+
+- name: Install Calico
+	shell: kubectl apply -f custom-resources.yaml
+
+
+- name: Delete custom-resources file
+	file:
+		path: /home/ansible/custom-resources.yaml
+		state: absent

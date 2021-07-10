@@ -1,0 +1,15 @@
+---
+
+- name: Configurar los workers
+	hosts: worker
+	tasks:
+		- name: Abrir puertos en los workers
+			import_role:
+				name: firewall_ports
+			vars:
+        - { port: 10250, protocol: 'tcp' }
+        - { port: 30000-32767, protocol: 'tcp' }
+
+    - name: Reload firewall
+    	import_role:
+    		name: firewall_reload

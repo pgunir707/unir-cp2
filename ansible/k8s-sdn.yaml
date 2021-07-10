@@ -1,0 +1,7 @@
+---
+
+- name: Install calico
+	hosts: master
+	tasks:
+		- import_role:
+				name: calico
