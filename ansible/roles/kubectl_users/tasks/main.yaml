@@ -1,19 +1,22 @@
 ---
 
 - name: Create kube folder
-	become: yes
-	file:
-		path: "{{ item.path}}/.kube"
-		state: directory
-		owner: "{{ item.user }}"
-		group: "{{ item.user }}"
-	with_items: {{ users }}
+  become: yes
+  file:
+    path: "{{ item.path}}/.kube"
+    state: directory
+    owner: "{{ item.user }}"
+    group: "{{ item.user }}"
+  with_items: 
+    - "{{ users }}"
 
 - name: Copy admin.conf
-	become: yes
-	copy:
-		src: "/etc/kubernetes/admin.conf"
-		dest: "{{ item.path }}/.kube/config"
-		owner: "{{ item.user }}"
-		group: "{{ item.user }}"
-	loop: "{{ users }}"
+  become: yes
+  copy:
+    src: "/etc/kubernetes/admin.conf"
+    dest: "{{ item.path }}/.kube/config"
+    owner: "{{ item.user }}"
+    group: "{{ item.user }}"
+    remote_src: yes
+  with_items:
+    - "{{ users }}"

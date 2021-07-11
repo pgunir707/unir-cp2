@@ -1,15 +1,21 @@
 ---
 
 - name: Configurar los workers
-	hosts: worker
-	tasks:
-		- name: Abrir puertos en los workers
-			import_role:
-				name: firewall_ports
-			vars:
-        - { port: 10250, protocol: 'tcp' }
-        - { port: 30000-32767, protocol: 'tcp' }
+  hosts: worker
+  tasks:
+
+    - name: Abrir puertos en los workers
+      import_role:
+        name: firewall_ports
+      vars:
+        ports:
+          - { port: 10250, protocol: 'tcp' }
+          - { port: 30000-32767, protocol: 'tcp' }
 
     - name: Reload firewall
-    	import_role:
-    		name: firewall_reload
+      import_role:
+        name: firewall_reload
+
+    - name: Join nodes
+      import_role:
+        name: cluster_join

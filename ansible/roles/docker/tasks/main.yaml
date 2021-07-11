@@ -24,6 +24,12 @@
     name: docker-ce
     state: present 
   
+- name: Change cgroup to systemd
+  become: yes
+  copy:
+    src: daemon.json
+    dest: /etc/docker/daemon.json
+
 - name: Start docker service
   service:
     name: docker
