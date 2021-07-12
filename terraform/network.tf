@@ -11,7 +11,7 @@ resource "azurerm_virtual_network" "myNet" {
 }
 
 # Creación de subnet
-resource "auzrerm_subnet" "mySubnet" {
+resource "azurerm_subnet" "mySubnet" {
   name                 = "terraformsubnet"
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.myNet.name
@@ -19,7 +19,7 @@ resource "auzrerm_subnet" "mySubnet" {
 }
 
 # Create NIC
-resource "azurerm_network_interface" "myNicl" {
+resource "azurerm_network_interface" "myNic1" {
   name                = "vmnicl"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name

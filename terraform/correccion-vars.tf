@@ -1,13 +1,7 @@
-variable "location" {
-  type = string
-  description = "Región de Azure donde crearemos la infraestructura"
-  default = "West Europe" 
-}
-
 variable "storage_account" {
   type = string
   description = "Nombre para la storage account"
-  default = "storageaccountpgomezunircp2"
+  default = "sapgmzunircp2"
 }
 
 variable "public_key_path" {
@@ -19,5 +13,5 @@ variable "public_key_path" {
 variable "ssh_user" {
   type = string
   description = "Usuario para hacer ssh"
-  default = "<SSH USER>"
+  default = "pedro"
 }
