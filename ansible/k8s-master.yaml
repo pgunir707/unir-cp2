@@ -44,9 +44,18 @@
       become: yes
       shell: kubeadm init --pod-network-cidr 192.169.0.0/16
 
+    - name: get the username
+      command: whoami
+      register: username
+
+    - name: get the root username
+      become: yes
+      command: whoami
+      register: rootname
+
     - import_role:
         name: kubectl_users
       vars:
          users:
-           - { user: 'root', path: '/root' }
-           - { user: 'master', path: '/home/master' }
+           - { user: "{{ rootname.stdout }}", path: '/root' }
+           - { user: "{{ username.stdout }}", path: "/home/{{ username.stdout }}" }

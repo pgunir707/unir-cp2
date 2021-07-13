@@ -17,3 +17,6 @@ ansible-playbook -i hosts -l master k8s-sdn.yaml
 
 echo "Lanzando playbook para configurar los workers"
 ansible-playbook -i hosts -l worker k8s-worker.yaml
+
+echo "Lanzando playbook para configurar HaProxy"
+ansible-playbook -i hosts -l master k8s-haproxy.yaml
