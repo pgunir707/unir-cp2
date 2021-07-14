@@ -1,6 +1,6 @@
 # Security group
 
-resource "azurerm_network_security_group" "mySecGroup" {
+resource "azurerm_network_security_group" "az_vm_secgroup" {
     name                = "sshtraffic"
     location            = azurerm_resource_group.rg.location
     resource_group_name = azurerm_resource_group.rg.name
@@ -24,7 +24,8 @@ resource "azurerm_network_security_group" "mySecGroup" {
 
 # Vinculamos el security group al interface de red
 
-resource "azurerm_network_interface_security_group_association" "mySecGroupAssociation1" {
-  network_interface_id      = azurerm_network_interface.myNic1.id
-  network_security_group_id = azurerm_network_security_group.mySecGroup.id
+resource "azurerm_network_interface_security_group_association" "az_vm_secgroup_assoc" {
+  count                     = length(var.vm_names)
+  network_interface_id      = azurerm_network_interface.az_vm_nic[count.index].id
+  network_security_group_id = azurerm_network_security_group.az_vm_secgroup.id
 }
