@@ -1,0 +1,29 @@
+---
+
+- name: Delete a namespace if exists
+  command: kubectl delete namespace jenkins
+  ignore_errors: true
+
+- name: Create namespace Jenkins
+  command:  kubectl create namespace jenkins
+
+- name: Copy deploy
+  become: true
+  copy:
+    src: jenkins-deployment.yaml
+    dest: /tmp/jenkins-deployment.yaml
+
+- name: Create deployment
+  command: kubectl create -f /tmp/jenkins-deployment.yaml --namespace jenkins
+
+- name: Copy service
+  become: true
+  copy:
+    src: jenkins-service.yaml
+    dest: /tmp/jenkins-service.yaml
+
+- name: Create service
+  command:  kubectl create -f /tmp/jenkins-service.yaml --namespace jenkins
+
+- name: public app
+  command: kubectl port-forward service/jenkins 8080:8080 --namespace jenkins

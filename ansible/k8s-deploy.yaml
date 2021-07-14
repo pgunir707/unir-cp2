@@ -1,0 +1,7 @@
+---
+
+- name: Deploy jenkins app
+  hosts: master
+  tasks:
+    - import_role:
+        name: jenkins

@@ -14,13 +14,21 @@
         packages:
           - chrony
 
-    - name: "enabled and start chronyd"
+    - name: "enable chronyd"
       become: yes
-      systemd: 
-        name: chronyd
-        state: started
-        daemon_reload: yes
-        enabled: yes
+      command: systemctl enable chronyd
+
+    - name: "start chronyd"
+      become: yes
+      command: systemctl start chronyd
+
+#    - name: "enabled and start chronyd"
+#      become: yes
+#      systemd: 
+#        name: chronyd
+#        state: started
+#        daemon_reload: yes
+#        enabled: yes
         
     - name: "Enable ntp"
       command: /usr/bin/timedatectl set-ntp true
@@ -35,3 +43,12 @@
           - nfs-utils
           - nfs4-acl-tools
           - wget
+    
+    - name: enable service firewalld
+      become: yes
+      command: "systemctl enable firewalld"
+
+    - name: start service firewalld
+      become: yes
+      command: "systemctl start firewalld"
+    

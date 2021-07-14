@@ -20,3 +20,6 @@ ansible-playbook -i hosts -l worker k8s-worker.yaml
 
 echo "Lanzando playbook para configurar HaProxy"
 ansible-playbook -i hosts -l master k8s-haproxy.yaml
+
+echo "Lanzando playbook para desplegar Jenkins"
+ansible-playbook -i hosts -l master k8s-deploy.yaml

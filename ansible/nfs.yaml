@@ -36,18 +36,33 @@
           - nfs-utils
           - net-tools
 
+    - name: "status nfs-server"
+      become: yes
+      command: systemctl status nfs-server
+      register: nfs_status  
+    
+#    - name: "enable nfs-server"
+#      become: yes
+#      command: systemctl enable nfs-server
+#      when: "'loaded' in {{ nfs_status.stdout }}"
+
+#    - name: "start nfs-server"
+#      become: yes
+#      command: systemctl start nfs-server
+#      when: "'loaded' in {{ nfs_status.stdout }}"
+ 
     - name: "enabled and start nfs-server"
       become: yes
       systemd:
         name: nfs-server
         state: started
         enabled: yes
+      when: "'loaded' in nfs_status.stdout"
 
     - import_role:
         name: exports
       vars:
         nfs_path: "/srv/nfs"
-
 
     - import_role:
         name: firewall_services

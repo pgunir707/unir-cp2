@@ -23,6 +23,12 @@
   dnf:
     name: docker-ce
     state: present 
+
+- name: Create /etc/docker if not exists
+  become: yes
+  file:
+    path: /etc/docker
+    state: directory
   
 - name: Change cgroup to systemd
   become: yes
