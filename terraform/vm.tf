@@ -5,7 +5,7 @@ resource "azurerm_linux_virtual_machine" "vm_template" {
     count               = length(var.vm_names)
     name                = "${var.vm_names[count.index]}"
     resource_group_name = azurerm_resource_group.rg.name
-    admin_username      = "pedro"
+    admin_username      = var.ssh_user
     location            = azurerm_resource_group.rg.location
     size                = "${var.vm_size[count.index]}"
     network_interface_ids = [ azurerm_network_interface.az_vm_nic[count.index].id ]
